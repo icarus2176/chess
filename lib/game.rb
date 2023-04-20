@@ -6,5 +6,3 @@ class Game
     board = Board.new
   end
 end
-
-puts "hello".on_red
