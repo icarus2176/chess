@@ -1,4 +1,5 @@
 require_relative "space.rb"
+require "colorize"
 
 class Board
   attr_reader :spaces
@@ -7,10 +8,26 @@ class Board
     @spaces = Array.new(8)
 
     @spaces.each_with_index do |row, x|
-      row = Array.new(8)
-      row.each_with_index do |column, y|
-          row[y] = Space.new(x, y, (x - y).odd?)
+      add = Array.new(8)
+      add.each_with_index do |column, y|
+        color = (x - y).odd?
+        add[y] = Space.new(x, y, color)
       end
+      @spaces[x] = add
     end
   end
+
+  def display
+    @spaces.each do |row|
+       output = ""
+       row.each do |space|
+         add = space.piece
+         if space.dark
+           add = add.on_red
+         end
+         output += add
+       end
+       puts output
+     end
+   end
 end
