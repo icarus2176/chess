@@ -15,6 +15,7 @@ class Board
       end
       @spaces[x] = add
     end
+    add_pieces
   end
 
   def display
