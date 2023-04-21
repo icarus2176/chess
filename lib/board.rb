@@ -1,4 +1,4 @@
-require_relative "space.rb"
+require_relative "space"
 require "colorize"
 
 class Board

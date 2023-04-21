@@ -1,6 +1,6 @@
-require_relative "piece.rb"
+require_relative "piece"
 
-class Rook extends Piece
+class Rook < Piece
   def move
     
   end

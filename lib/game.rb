@@ -1,10 +1,10 @@
-require_relative "board.rb"
-require_relative "pawn.rb"
-require_relative "rook.rb"
-require_relative "knight.rb"
-require_relative "bishop.rb"
-require_relative "queen.rb"
-require_relative "king.rb"
+require_relative "board"
+require_relative "pawn"
+require_relative "rook"
+require_relative "knight"
+require_relative "bishop"
+require_relative "queen"
+require_relative "king"
 
 class Game
   def initialize
@@ -14,6 +14,11 @@ class Game
 
   def create_pieces
     create_pawns
+    create_rooks
+    create_knights
+    create_bishops
+    create_queens
+    create_kings
   end
 
   def create_pawns
