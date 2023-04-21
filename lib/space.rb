@@ -6,6 +6,6 @@ class Space
     @x = x
     @y = y
     @dark = dark
-    @piece = "  "
+    @piece = nil
   end
 end
