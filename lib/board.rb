@@ -15,14 +15,18 @@ class Board
       end
       @spaces[x] = add
     end
-    add_pieces
   end
 
   def display
-    @spaces.each do |row|
-       output = ""
+    puts "  0 1 2 3 4 5 6 7"
+    @spaces.each_with_index do |row, index|
+       output = index.to_s + " "
        row.each do |space|
-         add = space.piece
+        if space.piece == nil
+          add = "  ".on_black
+        else
+         add = (space.piece.symbol + " ").on_black
+        end
          if space.dark
            add = add.on_red
          end
