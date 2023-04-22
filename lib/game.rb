@@ -110,4 +110,20 @@ class Game
     @board.spaces[7, 3].piece = king2
     @@white_pieces.push(king2)
   end
+
+  def move(space1, space2)
+    start_space = space1.split("")
+    piece = @board[start_space[0], start_space[1]].piece
+    end_space = space2.split("")
+    if piece.moves.include?(end_space)
+      piece.x = end_space[0]
+      piece.y = end_space[1]
+
+      @board[end_space[0], end_space[1]].piece&.delete
+      @board[end_space[0], end_space[1]].piece = piece
+    else
+      puts "Invalid move."
+      get_input
+    end
+  end
 end
