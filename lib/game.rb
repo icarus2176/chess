@@ -122,8 +122,17 @@ class Game
       @board[end_space[0], end_space[1]].piece&.delete
       @board[end_space[0], end_space[1]].piece = piece
     else
-      puts "Invalid move."
-      get_input
+      puts "Invalid move. Please choose again."
+      input
     end
+  end
+
+  def input
+    puts "What piece would you like to move? (XY then press enter)"
+    piece = gets.chomp
+    puts "Where would you like to move it? (XY then press enter)"
+    space = gets.chomp
+
+    move(piece, space)
   end
 end
