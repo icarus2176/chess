@@ -5,23 +5,26 @@ require_relative "knight"
 require_relative "bishop"
 require_relative "queen"
 require_relative "king"
+require_relative "player"
 
 class Game
   attr_reader :board
   def initialize
     @board = Board.new
     @white_pieces = []
+    white = Player.new("white")
     @black_pieces = []
+    black = Player,new("black")
     create_pieces
   end
 
   def create_pieces
+    create_kings
     create_pawns
     create_rooks
     create_knights
     create_bishops
     create_queens
-    create_kings
   end
 
   def create_pawns
@@ -153,7 +156,7 @@ class Game
     x = piece.x
     y = piece.y
     spaces_passed = find_spaces_passed
-    
+
     spaces_passed.each do |space|
       return true if space.piece
     end
@@ -175,6 +178,18 @@ class Game
       x += move[0]
       y += move[1]
       spaces_passed.push ([x, y])
+    end
+  end
+
+  def check?(player)
+    if player == white
+      @black_pieces.each do |piece|
+        return true if piece.moves_available == [@white_pieces[0].x, @white_pieces[0].y]
+      end
+    elsif player == black
+      @white_pieces.each do |piece|
+        return true if piece.moves_available == [@black_pieces[0].x, @black_pieces[0].y]
+      end
     end
   end
 end
