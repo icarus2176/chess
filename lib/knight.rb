@@ -3,7 +3,7 @@ require_relative "piece"
 class Knight < Piece
   attr_accessor :x, :y
   attr_reader :color, :moves, :board, :symbol
-  moves = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+  move = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
 
   def initialize(x, y, color, board)
     super

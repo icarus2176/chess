@@ -115,13 +115,14 @@ class Game
   def move(space1, space2)
     start_space = space1.split("")
     piece = @board.spaces[start_space[0]][start_space[1]].piece
-    end_space = space2.split("")
-    if piece.moves.include?(end_space)
+    end_coordinates = space2.split("")
+    end_space = @board.spaces[end_coordinates[0]][end_coordinates[1]]
+    if valid_move(piece, end_space)
       piece.x = end_space[0]
       piece.y = end_space[1]
 
-      @board.spaces[end_space[0]][end_space[1]].piece&.delete
-      @board.spaces[end_space[0]][end_space[1]].piece = piece
+      end_space.piece&.delete
+      end_space.piece = piece
     else
       puts "Invalid move. Please choose again."
       input
@@ -135,6 +136,46 @@ class Game
     space = gets.chomp
 
     move(piece, space)
+  end
+
+  def valid_move(piece, end_space)
+    return false unless piece.moves.include?(end_space)
+    return false if end_space.piece && end_space.piece.color == piece.color
+    return false if pass_through(piece, end_space)
+
+    true
+  end
+
+  def pass_through(piece, end_space)
+    return false if piece.instance_of?(knight)
+
+    move = find_change(piece, end_space)
+    x = piece.x
+    y = piece.y
+    spaces_passed = find_spaces_passed
+    
+    spaces_passed.each do |space|
+      return true if space.piece
+    end
+    return false
+  end
+  
+  def find_change(piece, end_space)
+    x_change = end_space.x - piece.x
+    x_change /= abs(x_change)
+    y_change = end_space.y - piece.y
+    y_change /= abs(y_change)
+
+    [x_change, y_change]
+  end
+
+  def find_spaces_passed(x, y, end_space, move)
+    spaces_passed = []
+    until x == endspace.x && y == end_space.y
+      x += move[0]
+      y += move[1]
+      spaces_passed.push ([x, y])
+    end
   end
 end
 
