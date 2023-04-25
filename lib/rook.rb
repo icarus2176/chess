@@ -3,7 +3,6 @@ require_relative "piece"
 class Rook < Piece
   attr_accessor :location
   attr_reader :color, :moves_available, :board, :symbol
-  
 
   def initialize(location, color, board)
     super
@@ -16,13 +15,16 @@ class Rook < Piece
     @moves_available = []
   end
 
-  def moves_available
-    @moves = []
+  def find_moves
+    @moves_available = []
     move.each do |space|
-      new_x = @location[0] + space[0]
-      new_y = @location[1] + space[1]
-      moves.push([new_x, new_y]) if new_x.between?(0, 7) && new_y.between?(0, 7)
+      new_x = @location[0]
+      new_y = @location[1]
+      while new_x.between?(1, 6) && new_y.between?(1, 6)
+        new_x += space[0]
+        new_y += space[1]
+        @moves_available.push([new_x, new_y])
+      end
     end
-    @moves = moves
   end
 end

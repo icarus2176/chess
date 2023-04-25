@@ -162,20 +162,20 @@ class Game
     return false if piece.instance_of?(knight)
 
     move = find_change(piece, end_space)
-    x = piece.x
-    y = piece.y
-    spaces_passed = find_spaces_passed
+    x = piece.location[0]
+    y = piece.location[1]
+    spaces_passed = find_spaces_passed(x, y, end_space, move)
 
     spaces_passed.each do |space|
       return true if space.piece
     end
-    return false
+    false
   end
   
   def find_change(piece, end_space)
-    x_change = end_space.x - piece.x
+    x_change = end_space.location[0] - piece.location[0]
     x_change /= abs(x_change)
-    y_change = end_space.y - piece.y
+    y_change = end_space.location[1] - piecelocation[1]
     y_change /= abs(y_change)
 
     [x_change, y_change]
@@ -188,6 +188,7 @@ class Game
       y += move[1]
       spaces_passed.push ([x, y])
     end
+    spaces_passed
   end
 
   def check?(player)
