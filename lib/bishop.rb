@@ -1,10 +1,10 @@
 require_relative "piece"
 
 class Bishop < Piece
-  attr_accessor :x, :y
+  attr_accessor :location
   attr_reader :color, :moves, :board, :symbol
 
-  def initialize(x, y, color, board)
+  def initialize(location, color, board)
     super
     if color
       @symbol = "🨧"

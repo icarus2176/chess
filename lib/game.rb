@@ -42,75 +42,75 @@ class Game
   end
 
   def create_rooks
-    rook1 = Rook.new(0, 0, true, @board)
+    rook1 = Rook.new([0, 0], true, @board)
     @board.spaces[0][0].piece = rook1
     @black_pieces.push(rook1)
 
-    rook2 = Rook.new(0, 7, true, @board)
+    rook2 = Rook.new([0, 7], true, @board)
     @board.spaces[0][7].piece = rook2
     @black_pieces.push(rook1)
 
-    rook3 = Rook.new(7, 0, false, @board)
+    rook3 = Rook.new([7, 0], false, @board)
     @board.spaces[7][0].piece = rook3
     @white_pieces.push(rook3)
 
-    rook4 = Rook.new(7, 7, false, @board)
+    rook4 = Rook.new([7, 7], false, @board)
     @board.spaces[7][7].piece = rook4
     @white_pieces.push(rook4)
   end
 
   def create_knights
-    knight1 = Knight.new(0, 1, true, @board)
+    knight1 = Knight.new([0, 1], true, @board)
     @board.spaces[0][1].piece = knight1
     @black_pieces.push(knight1)
 
-    knight2 = Knight.new(0, 6, true, @board)
+    knight2 = Knight.new([0, 6], true, @board)
     @board.spaces[0][6].piece = knight2
     @black_pieces.push(knight2)
 
-    knight3 = Knight.new(7, 1, false, @board)
+    knight3 = Knight.new([7, 1], false, @board)
     @board.spaces[7][1].piece = knight3
     @white_pieces.push(knight3)
 
-    knight4 = Knight.new(7, 6, false, @board)
+    knight4 = Knight.new([7, 6], false, @board)
     @board.spaces[7][6].piece = knight4
     @white_pieces.push(knight4)
   end
 
   def create_bishops
-    bishop1 = Bishop.new(0, 2, true, @board)
+    bishop1 = Bishop.new([0, 2], true, @board)
     @board.spaces[0][2].piece = bishop1
     @black_pieces.push(bishop1)
 
-    bishop2 = Bishop.new(0, 5, true, @board)
+    bishop2 = Bishop.new([0, 5], true, @board)
     @board.spaces[0][5].piece = bishop2
     @black_pieces.push(bishop2)
 
-    bishop3 = Bishop.new(7, 2, false, @board)
+    bishop3 = Bishop.new([7, 2], false, @board)
     @board.spaces[7][2].piece = bishop3
     @white_pieces.push(bishop3)
 
-    bishop4 = Bishop.new(7, 5, false, @board)
+    bishop4 = Bishop.new([7, 5], false, @board)
     @board.spaces[7][5].piece = bishop4
     @white_pieces.push(bishop4)
   end
 
   def create_queens
-    queen1 = Queen.new(0, 3, true, @board)
+    queen1 = Queen.new([0, 3], true, @board)
     @board.spaces[0][3].piece = queen1
     @black_pieces.push(queen1)
 
-    queen2 = Queen.new(7, 3, false, @board)
+    queen2 = Queen.new([7, 3], false, @board)
     @board.spaces[7][3].piece = queen2 
     @white_pieces.push(queen2)
   end
 
   def create_kings
-    king1 = King.new(0, 4, true, @board)
+    king1 = King.new([0, 4], true, @board)
     @board.spaces[0][4].piece = king1
     @black_pieces.push(king1)
 
-    king2 = King.new(7, 4, false, @board)
+    king2 = King.new([7, 4], false, @board)
     @board.spaces[7][4].piece = king2
     @white_pieces.push(king2)
   end
@@ -121,11 +121,20 @@ class Game
     end_coordinates = space2.split("")
     end_space = @board.spaces[end_coordinates[0]][end_coordinates[1]]
     if valid_move(piece, end_space)
-      piece.x = end_space[0]
-      piece.y = end_space[1]
 
-      end_space.piece&.delete
+      prev_piece = end_space.piece
       end_space.piece = piece
+      piece.location = end_space
+
+      if check?(active_player)
+        puts "Invalid move. This puts you in check."
+        piece.location = start_space
+        end_space.piece = prev_piece
+
+        input
+      else
+        end_space.piece&.delete
+      end
     else
       puts "Invalid move. Please choose again."
       input
@@ -184,11 +193,11 @@ class Game
   def check?(player)
     if player == white
       @black_pieces.each do |piece|
-        return true if piece.moves_available == [@white_pieces[0].x, @white_pieces[0].y]
+        return true if piece.moves_available.include(@white_pieces[0].location)
       end
     elsif player == black
       @white_pieces.each do |piece|
-        return true if piece.moves_available == [@black_pieces[0].x, @black_pieces[0].y]
+        return true if piece.moves_availableinclude(@black_pieces[0].location)
       end
     end
   end

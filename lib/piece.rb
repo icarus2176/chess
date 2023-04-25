@@ -1,10 +1,9 @@
 class Piece
-  attr_accessor :x, :y
+  attr_accessor :location
   attr_reader :color, :moves, :board, :symbol
 
-  def initialize(x, y, color, board)
-    @x = x
-    @y = y
+  def initialize(location, color, board)
+    @location = location
     @color = color
     @board = board
     @moves = []
