@@ -197,7 +197,7 @@ class Game
       end
     elsif player == black
       @white_pieces.each do |piece|
-        return true if piece.moves_availableinclude(@black_pieces[0].location)
+        return true if piece.moves_available.include(@black_pieces[0].location)
       end
     end
   end

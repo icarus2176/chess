@@ -2,8 +2,8 @@ require_relative "piece"
 
 class Rook < Piece
   attr_accessor :location
-  attr_reader :color, :moves, :board, :symbol
-  move = [[0, -1], [0, 1], [1, 0 ], [-1, 0]]
+  attr_reader :color, :moves_available, :board, :symbol
+  
 
   def initialize(location, color, board)
     super
@@ -12,10 +12,12 @@ class Rook < Piece
     else
       @symbol = "🨂"
     end
+    @moves = [[0, -1], [0, 1], [1, 0 ], [-1, 0]]
+    @moves_available = []
   end
 
   def moves_available
-    moves = []
+    @moves = []
     move.each do |space|
       new_x = @location[0] + space[0]
       new_y = @location[1] + space[1]

@@ -2,8 +2,8 @@ require_relative "piece"
 
 class Knight < Piece
   attr_accessor :location
-  attr_reader :color, :moves, :board, :symbol
-  move = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+  attr_reader :color, :moves_available, :board, :symbol
+  
 
   def initialize(location, color, board)
     super
@@ -12,6 +12,8 @@ class Knight < Piece
     else
       @symbol = "🨄"
     end
+    @moves = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+    @moves_available = []
   end
 
   def moves_available 

@@ -2,8 +2,8 @@ require_relative "piece"
 
 class King < Piece
   attr_accessor :location
-  attr_reader :color, :moves, :board, :symbol
-  move = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
+  attr_reader :color, :moves_available, :board, :symbol
+ 
   def initialize(location, color, board)
     super
     if color
@@ -11,6 +11,8 @@ class King < Piece
     else
       @symbol = "🨀"
     end
+    @moves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
+    @moves_available = []
   end
 
   def moves_available 
