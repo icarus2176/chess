@@ -11,6 +11,19 @@ class Queen < Piece
     else
       @symbol = "🨁"
     end
+    @moves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
+  end
+
+  def find_moves
     @moves_available = []
+    move.each do |space|
+      new_x = @location[0]
+      new_y = @location[1]
+      while new_x.between?(1, 6) && new_y.between?(1, 6)
+        new_x += space[0]
+        new_y += space[1]
+        @moves_available.push([new_x, new_y])
+      end
+    end
   end
 end

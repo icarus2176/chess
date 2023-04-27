@@ -12,7 +12,6 @@ class King < Piece
       @symbol = "🨀"
     end
     @moves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
-    @moves_available = []
   end
 
   def find_moves

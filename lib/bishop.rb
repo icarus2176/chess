@@ -12,7 +12,6 @@ class Bishop < Piece
       @symbol = "🨃"
     end
     @moves = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
-    @moves_available = []
   end
 
   def find_moves

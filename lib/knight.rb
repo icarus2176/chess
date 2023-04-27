@@ -13,7 +13,6 @@ class Knight < Piece
       @symbol = "🨄"
     end
     @moves = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
-    @moves_available = []
   end
 
   def find_moves 

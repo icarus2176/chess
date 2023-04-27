@@ -11,6 +11,5 @@ class Pawn < Piece
     else
       @symbol = "🨅"
     end
-    @moves_available = []
   end
 end

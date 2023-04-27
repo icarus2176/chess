@@ -14,7 +14,7 @@ class Game
     @white_pieces = []
     white = Player.new("white")
     @black_pieces = []
-    black = Player,new("black")
+    black = Player.new("black")
     create_pieces
   end
 
@@ -29,13 +29,13 @@ class Game
 
   def create_pawns
     @board.spaces[1].each_with_index do |space, index|
-      pawn = Pawn.new(index, 1, true, @board)
+      pawn = Pawn.new([index, 1], true, @board)
       space.piece = pawn
       @black_pieces.push(pawn)
     end
 
     @board.spaces[6].each_with_index do |space, index|
-      pawn = Pawn.new(index, 6, false, @board)
+      pawn = Pawn.new([index, 6], false, @board)
       space.piece = pawn
       @white_pieces.push(pawn)
     end
@@ -151,7 +151,7 @@ class Game
   end
 
   def valid_move(piece, end_space)
-    return false unless piece.moves.include?(end_space)
+    return false unless piece.moves_available.include?(end_space)
     return false if end_space.piece && end_space.piece.color == piece.color
     return false if pass_through(piece, end_space)
 
@@ -194,13 +194,30 @@ class Game
   def check?(player)
     if player == white
       @black_pieces.each do |piece|
-        return true if piece.moves_available.include(@white_pieces[0].location)
+        return true if piece.moves_available.include(@white_pieces[0].location) && valid_move(piece, @white_pieces[0].location)
       end
     elsif player == black
       @white_pieces.each do |piece|
-        return true if piece.moves_available.include(@black_pieces[0].location)
+        return true if piece.moves_available.include(@black_pieces[0].location) && valid_move(piece, @black_pieces[0].location)
       end
     end
+  end
+
+  def checkmate?(player)
+    if player == white
+      @black_pieces.each do |piece|
+        piece.moves_available.each do |move|
+          return false if valid_move(piece, move)
+        end
+      end
+    elsif player == black
+      @white_pieces.each do |piece|
+        piece.moves_available.each do |move|
+          return false if valid_move(piece, move)
+        end
+      end
+    end
+    true
   end
 end
 

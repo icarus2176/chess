@@ -6,6 +6,6 @@ class Piece
     @location = location
     @color = color
     @board = board
-    @moves = []
+    @moves_available = []
   end
 end

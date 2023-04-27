@@ -12,7 +12,6 @@ class Rook < Piece
       @symbol = "🨂"
     end
     @moves = [[0, -1], [0, 1], [1, 0 ], [-1, 0]]
-    @moves_available = []
   end
 
   def find_moves
