@@ -9,6 +9,7 @@ require_relative "player"
 
 class Game
   attr_reader :board
+
   def initialize
     @board = Board.new
     @white_pieces = []
@@ -116,29 +117,77 @@ class Game
   end
 
   def move(space1, space2)
-    start_space = space1.split("")
-    piece = @board.spaces[start_space[0]][start_space[1]].piece
+    start_coordinates = space1.split("")
+    start space = @board.spaces[start_space[0]][start_space[1]]
+    piece = start_space.piece
     end_coordinates = space2.split("")
     end_space = @board.spaces[end_coordinates[0]][end_coordinates[1]]
+    if piece.class = Pawn
+      pawn_move(piece, start_space, end_space)
+
+    end
     if valid_move(piece, end_space)
 
       prev_piece = end_space.piece
-      end_space.piece = piece
-      piece.location = end_space
+
+      move_piece(piece, start_space, end_space)
 
       if check?(active_player)
-        puts "Invalid move. This puts you in check."
-        piece.location = start_space
-        end_space.piece = prev_piece
-
-        input
+        reverse_move(piece, prev_piece, start_space, end_space)
       else
-        end_space.piece&.delete
+        prev_piece&.delete
       end
     else
-      puts "Invalid move. Please choose again."
-      input
+      invalid_move
     end
+  end
+
+  def pawn_move(piece, start_space, end_space)
+    prev_piece = end_space.piece
+
+    if piece.moves_available.include(end_space.location)
+      if valid_move(piece, end_space) && end_space.piece == nil
+        move_piece(piece, start_space, end_space)
+      else
+        invalid_move
+      end
+    elsif piece.captures_available.include(end_space.location) 
+      if end_space.piece && end_space.piece.color != piece.color
+        move_piece(piece, start_space, end_space)
+      else
+        invalid_move
+      end
+    else
+      invalid_move
+    end
+      piece.moved = true
+    end
+
+    if check?(active_player)
+      reverse_move(piece, prev_piece, start_space, end_space)
+    else
+      prev_piece&.delete
+    end
+  end
+
+  def move_piece(piece, start_space, end_space)
+    end_space.piece = piece
+    start_space.piece = nil
+    piece.location = end_space.location
+  end
+
+  def reverse_move(piece, prev_piece, start_space, end_space)
+    puts "Invalid move. This puts you in check."
+    piece.location = start_space.location
+    start_space.piece = piece 
+    end_space.piece = prev_piece
+
+    input
+  end
+
+  def invalid_move
+    puts "Invalid move. Please choose again."
+    input
   end
 
   def input
