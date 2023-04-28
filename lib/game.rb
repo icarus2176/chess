@@ -265,7 +265,7 @@ class Game
     end
   end
 
-  def checkmate?(player)
+  def stalemate?(player)
     if player == @white
       @black_pieces.each do |piece|
         piece.moves_available.each do |move|
@@ -280,6 +280,14 @@ class Game
       end
     end
     true
+  end
+
+  def checkmate?(player)
+    if player == @white
+      return true if check(player.@white_pieces[0].location) && stalemate?(player)
+      elsif player == @black
+        return true if check(player.@black_pieces[0].location) && stalemate?(player)
+
   end
 
   def castling_possible(king, end_space)
