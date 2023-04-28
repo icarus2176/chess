@@ -1,7 +1,7 @@
 require_relative "piece"
 
 class King < Piece
-  attr_accessor :location
+  attr_accessor :location, :moved
   attr_reader :color, :moves_available, :board, :symbol
  
   def initialize(location, color, board)
@@ -12,6 +12,7 @@ class King < Piece
       @symbol = "🨀"
     end
     @moves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 0], [0, 1], [1, -1], [1, 0], [1, 1]]
+    @moved = false
   end
 
   def find_moves

@@ -1,7 +1,7 @@
 require_relative "piece"
 
 class Rook < Piece
-  attr_accessor :location
+  attr_accessor :location, :moved
   attr_reader :color, :moves_available, :board, :symbol
 
   def initialize(location, color, board)
@@ -12,6 +12,7 @@ class Rook < Piece
       @symbol = "🨂"
     end
     @moves = [[0, -1], [0, 1], [1, 0 ], [-1, 0]]
+    @moved = false
   end
 
   def find_moves

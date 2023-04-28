@@ -1,8 +1,8 @@
 require_relative "piece.rb"
 
 class Pawn < Piece
-  attr_accessor :location
-  attr_reader :color, :moves_available, :board, :symbol, :captures_available, :captures, :moved
+  attr_accessor :location, :moved
+  attr_reader :color, :moves_available, :board, :symbol, :captures_available, :captures
 
   def initialize(location, color, board)
     super

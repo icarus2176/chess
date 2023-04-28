@@ -13,10 +13,11 @@ class Game
   def initialize
     @board = Board.new
     @white_pieces = []
-    white = Player.new("white")
+    @white = Player.new("white")
     @black_pieces = []
-    black = Player.new("black")
+    @black = Player.new("black")
     create_pieces
+    @active_player = @white
   end
 
   def create_pieces
@@ -141,15 +142,17 @@ class Game
       prev_piece = end_space.piece
       move_piece(piece, start_space, end_space)
 
-      if check?(active_player)
+      if check?(active_player, end_space)
         reverse_move(piece, prev_piece, start_space, end_space)
       else
         prev_piece&.delete
       end
+    elsif piece.class == King && castling_possible(piece, end_space)
     else
       invalid_move
     end
 
+    piece&.moved = true
     piece.find_moves
   end
 
@@ -171,10 +174,9 @@ class Game
     else
       invalid_move
     end
-      piece.moved = true
     end
 
-    if check?(active_player)
+    if check?(active_player, end_space)
       reverse_move(piece, prev_piece, start_space, end_space)
     else
       prev_piece&.delete
@@ -251,12 +253,12 @@ class Game
     spaces_passed
   end
 
-  def check?(player)
-    if player == white
+  def check?(player, space)
+    if player == @white
       @black_pieces.each do |piece|
         return true if piece.moves_available.include(@white_pieces[0].location) && valid_move(piece, @white_pieces[0].location)
       end
-    elsif player == black
+    elsif player == @black
       @white_pieces.each do |piece|
         return true if piece.moves_available.include(@black_pieces[0].location) && valid_move(piece, @black_pieces[0].location)
       end
@@ -264,13 +266,13 @@ class Game
   end
 
   def checkmate?(player)
-    if player == white
+    if player == @white
       @black_pieces.each do |piece|
         piece.moves_available.each do |move|
           return false if valid_move(piece, move)
         end
       end
-    elsif player == black
+    elsif player == @black
       @white_pieces.each do |piece|
         piece.moves_available.each do |move|
           return false if valid_move(piece, move)
@@ -279,6 +281,28 @@ class Game
     end
     true
   end
+
+  def castling_possible(king, end_space)
+      return false unless king.moved == false
+
+      if end_space.location[0] == 2
+        return false if @board[0, king.location[1]]&.piece&.moved
+        return false if pass_through(king, @board[0, king.location[1]])
+        return false if check(@active_player, king.location)
+        passed_spaces = find_spaces_passed(king.location[0], king.location[1], end_space, [-1, 0])
+        passed_spaces.each do |space|
+          return false if check?(@active_player, space)
+        end
+      elsif end_space.location[0] == 6
+        return false if @board[7, king.location[1]]&.piece&.moved  
+        return false if pass_through(king, @board[7, king.location[1]])
+        return false if check(@active_player, king.location)
+        passed_spaces = find_spaces_passed(king.location[0], king.location[1], end_space, [1, 0])
+        passed_spaces.each do |space|
+          return false if check?(@active_player, space)
+        end
+      end
+    end
 end
 
 game = Game.new
