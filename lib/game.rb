@@ -26,6 +26,18 @@ class Game
     create_knights
     create_bishops
     create_queens
+
+    find_all_moves
+  end
+
+  def find_all_moves
+    @white_pieces.each do |piece|
+      piece.find_moves
+    end
+
+    @black_pieces.each do |piece|
+      piece.find_moves
+    end
   end
 
   def create_pawns
@@ -122,14 +134,11 @@ class Game
     piece = start_space.piece
     end_coordinates = space2.split("")
     end_space = @board.spaces[end_coordinates[0]][end_coordinates[1]]
+
     if piece.class = Pawn
       pawn_move(piece, start_space, end_space)
-
-    end
-    if valid_move(piece, end_space)
-
+    elsif valid_move(piece, end_space)
       prev_piece = end_space.piece
-
       move_piece(piece, start_space, end_space)
 
       if check?(active_player)
@@ -140,6 +149,8 @@ class Game
     else
       invalid_move
     end
+
+    piece.find_moves
   end
 
   def pawn_move(piece, start_space, end_space)
