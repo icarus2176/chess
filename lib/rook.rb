@@ -17,7 +17,7 @@ class Rook < Piece
 
   def find_moves
     @moves_available = []
-    move.each do |space|
+    moves.each do |space|
       new_x = @location[0]
       new_y = @location[1]
       while new_x.between?(1, 6) && new_y.between?(1, 6)

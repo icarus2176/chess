@@ -18,6 +18,7 @@ class Game
     @black = Player.new("black")
     create_pieces
     @active_player = @white
+    play_game
   end
 
   def create_pieces
@@ -159,13 +160,13 @@ class Game
   def pawn_move(piece, start_space, end_space)
     prev_piece = end_space.piece
 
-    if piece.moves_available.include(end_space.location)
+    if piece.moves_available.include?(end_space.location)
       if valid_move(piece, end_space) && end_space.piece == nil
         move_piece(piece, start_space, end_space)
       else
         invalid_move
       end
-    elsif piece.captures_available.include(end_space.location) 
+    elsif piece.captures_available.include?(end_space.location) 
       if end_space.piece && end_space.piece.color != piece.color
         move_piece(piece, start_space, end_space)
       else
@@ -173,7 +174,6 @@ class Game
       end
     else
       invalid_move
-    end
     end
 
     if check?(active_player, end_space)
@@ -195,15 +195,15 @@ class Game
     start_space.piece = piece 
     end_space.piece = prev_piece
 
-    input
+    turn
   end
 
   def invalid_move
     puts "Invalid move. Please choose again."
-    input
+    turn
   end
 
-  def input
+  def turn
     puts "What piece would you like to move? (XY then press enter)"
     piece = gets.chomp
     puts "Where would you like to move it? (XY then press enter)"
@@ -214,14 +214,18 @@ class Game
 
   def valid_move(piece, end_space)
     return false unless piece.moves_available.include?(end_space)
-    return false if end_space.piece && end_space.piece.color == piece.color
+    return false if @board.spaces[end_space[0]][end_space[1]].piece && @board.spaces[end_space[0]][end_space[1]].piece.color == piece.color
     return false if pass_through(piece, end_space)
-
+    if @active_player == @white
+      return false if piece.color
+    elsif @active_player == @black
+      return false unless piece.color
+    end
     true
   end
 
   def pass_through(piece, end_space)
-    return false if piece.instance_of?(knight)
+    return false if piece.instance_of?(Knight)
 
     move = find_change(piece, end_space)
     x = piece.location[0]
@@ -235,20 +239,21 @@ class Game
   end
   
   def find_change(piece, end_space)
-    x_change = end_space.location[0] - piece.location[0]
-    x_change /= abs(x_change)
-    y_change = end_space.location[1] - piecelocation[1]
-    y_change /= abs(y_change)
+    x_change = end_space[0] - piece.location[0]
+    x_change /= x_change.abs unless x_change == 0
+    y_change = end_space[1] - piece.location[1]
+    y_change /= y_change.abs unless y_change == 0
 
     [x_change, y_change]
   end
 
   def find_spaces_passed(x, y, end_space, move)
     spaces_passed = []
-    until x == endspace.x && y == end_space.y
+    until x == end_space[0] && y == end_space[1]
       x += move[0]
       y += move[1]
-      spaces_passed.push ([x, y])
+      spaces_passed.push (@board.spaces[x][y])
+      
     end
     spaces_passed
   end
@@ -256,11 +261,11 @@ class Game
   def check?(player, space)
     if player == @white
       @black_pieces.each do |piece|
-        return true if piece.moves_available.include(@white_pieces[0].location) && valid_move(piece, @white_pieces[0].location)
+        return true if piece.moves_available.include?(@white_pieces[0].location) && valid_move(piece, @white_pieces[0].location)
       end
     elsif player == @black
       @white_pieces.each do |piece|
-        return true if piece.moves_available.include(@black_pieces[0].location) && valid_move(piece, @black_pieces[0].location)
+        return true if piece.moves_available.include?(@black_pieces[0].location) && valid_move(piece, @black_pieces[0].location)
       end
     end
   end
@@ -284,9 +289,9 @@ class Game
 
   def checkmate?(player)
     if player == @white
-      return true if check(player, @white_pieces[0].location) && stalemate?(player)
+      return true if check?(player, @white_pieces[0].location) && stalemate?(player)
     elsif player == @black
-      return true if check(player, @black_pieces[0].location) && stalemate?(player)
+      return true if check?(player, @black_pieces[0].location) && stalemate?(player)
     end
   end
 
@@ -315,27 +320,14 @@ class Game
     def play_game
       until false
         end_or_check(@active_player)
-        turn(@active_player)
+        turn
         switch_player
-      
+        display
       end
       puts "Play  again? (y/n)"
       if gets.chomp == "y"
         play_game
       end
-    end
-  
-    def turn(player)
-      space = 20
-      symbol = player.symbol
-      until @spaces[space] == " "
-        puts  "Choose an empty space (Type number of the space then press enter)."
-        space = gets.chomp.to_i - 1
-      end
-      
-      change_space(symbol, space)
-      player.owned_spaces .push(space)
-      display
     end
 
     def end_or_check(player)
@@ -357,8 +349,10 @@ class Game
         active_player = @white
       end
     end
+
+    def check
+      puts "You are in check."
+    end
 end
 
 game = Game.new
-
-game.board.display

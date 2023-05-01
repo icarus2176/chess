@@ -17,7 +17,7 @@ class Knight < Piece
 
   def find_moves 
     @moves_available = []
-    move.each do |space|
+    moves.each do |space|
       new_x = @location[0] + space[0]
       new_y = @location[1] + space[1]
       @moves_available.push([new_x, new_y]) if new_x.between?(0, 7) && new_y.between?(0, 7)
