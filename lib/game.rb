@@ -311,6 +311,52 @@ class Game
         end
       end
     end
+
+    def play_game
+      until false
+        end_or_check(@active_player)
+        turn(@active_player)
+        switch_player
+      
+      end
+      puts "Play  again? (y/n)"
+      if gets.chomp == "y"
+        play_game
+      end
+    end
+  
+    def turn(player)
+      space = 20
+      symbol = player.symbol
+      until @spaces[space] == " "
+        puts  "Choose an empty space (Type number of the space then press enter)."
+        space = gets.chomp.to_i - 1
+      end
+      
+      change_space(symbol, space)
+      player.owned_spaces .push(space)
+      display
+    end
+
+    def end_or_check(player)
+      if checkmate?(player)
+        win(player)
+      elsif stalemate?(player)
+        tie
+      elsif player == @white
+        check if check?(player, @white_pieces[0].location)
+      elsif player == @black
+        check if check?(player, @black_pieces[0].location)
+      end
+    end
+
+    def switch_player
+      if @active_player == @white
+        active_player = @black
+      elsif @active_player == @black
+        active_player = @white
+      end
+    end
 end
 
 game = Game.new
