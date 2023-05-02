@@ -136,6 +136,7 @@ class Game
     piece = start_space.piece
     end_coordinates = space2.split("")
     end_space = @board.spaces[end_coordinates[0]][end_coordinates[1]]
+    @en_passant = nil
 
     if piece.class = Pawn
       pawn_move(piece, start_space, end_space)
@@ -149,6 +150,7 @@ class Game
         prev_piece&.delete
       end
     elsif piece.class == King && castling_possible(piece, end_space)
+      castling(piece, end_space)
     else
       invalid_move
     end
@@ -163,6 +165,7 @@ class Game
     if piece.moves_available.include?(end_space.location)
       if valid_move(piece, end_space) && end_space.piece == nil
         move_piece(piece, start_space, end_space)
+        @en_passant = end_space if (end_space[1] - start_space[1]).abs == 2 
       else
         invalid_move
       end
@@ -172,6 +175,9 @@ class Game
       else
         invalid_move
       end
+    elsif @en_passant && en_passant_possible(piece, start_space, end_space)
+      move_piece(piece, start_space, end_space)
+      @en_passant.piece.delete
     else
       invalid_move
     end
@@ -297,11 +303,13 @@ class Game
 
   def castling_possible(king, end_space)
       return false unless king.moved == false
-
+      return false unless end_space  == [king.location[0], king.location[1] - 2] || [king.location[0], king.location[1] + 2]
+      
       if end_space.location[0] == 2
         return false if @board[0, king.location[1]]&.piece&.moved
         return false if pass_through(king, @board[0, king.location[1]])
         return false if check(@active_player, king.location)
+
         passed_spaces = find_spaces_passed(king.location[0], king.location[1], end_space, [-1, 0])
         passed_spaces.each do |space|
           return false if check?(@active_player, space)
@@ -310,11 +318,31 @@ class Game
         return false if @board[7, king.location[1]]&.piece&.moved  
         return false if pass_through(king, @board[7, king.location[1]])
         return false if check(@active_player, king.location)
+
         passed_spaces = find_spaces_passed(king.location[0], king.location[1], end_space, [1, 0])
         passed_spaces.each do |space|
           return false if check?(@active_player, space)
         end
       end
+    end
+
+    def castling(piece, start_space, end_space)
+      move_piece(piece, start_space, end_space)
+      if end_space.location[0] < 4
+        rook = @spaces[0][piece.location[1]].piece
+        move_piece(rook, @spaces[0][piece.location[1]], @spaces[end_space.location[0] + 1, [piece.location[1]]])
+      elsif end_space.location[0] > 4
+        rook = @spaces[7][piece.location[1]].piece
+        move_piece(rook, @spaces[7][piece.location[1]], @spaces[end_space.location[7] - 1, [piece.location[1]]])
+      end
+    end
+
+    def en_passant_possible(piece, start_space, end_space)
+      return false unless valid_move(piece, end_space)
+      return false unless start_space[1] == @en_passant[1] && (start_space.location[0] - @en_passant.location[0]).abs == 1
+      return false unless (end_space.location[1] - @en_passant.location[1]).abs == 1
+
+      true
     end
 
     def play_game

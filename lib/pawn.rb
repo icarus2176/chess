@@ -19,6 +19,7 @@ class Pawn < Piece
   end
 
   def find_moves
+    @moves.pop if @moved && @moves.length > 1
     @moves_available = []
     moves.each do |space|
       new_x = @location[0] + space[0]
